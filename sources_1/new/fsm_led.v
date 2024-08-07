@@ -36,6 +36,7 @@ module fsm_led(
     end
 
     // Output Combinational Logic
+    // 밀리머신인 경우임
     always @(*) begin
         case (state)
            LED_OFF: begin

@@ -1,6 +1,5 @@
 `timescale 1ns / 1ps
 
-
 module fsm_watch(
     input clk,
     input reset,
@@ -34,20 +33,24 @@ module fsm_watch(
             if(sw[0] == 1'b1) 
                 next_state = RUN_MD;
             else if(sw[1]==1)
+                // clear mode는 오직 stop상태만 가능하다..
                 next_state = CLR_MD;
             else
+                // 자기자신의 상태를 쭉 유지하게 해주어야함
                 next_state = STP_MD;
         end
         RUN_MD: begin
             if(sw[0] == 1'b0) 
                 next_state = STP_MD;
             else
+                // 자기자신의 상태를 쭉 유지하게 해주어야함
                 next_state = RUN_MD;
         end
         CLR_MD: begin
             if(sw[1] == 1'b0)
                 next_state = STP_MD;
             else 
+                // 자기자신의 상태를 쭉 유지하게 해주어야함
                 next_state = CLR_MD;
         end
         default: begin
@@ -71,13 +74,11 @@ module fsm_watch(
             o_clr_on = 1'b1;
             o_run_on = 1'b0;
         end
-        // default이거 안하면 어떻게 될까요??
+        // default이거 안하면 어떻게 될까요?? -> latch
         default: begin
             o_run_on = 1'b0;
             o_clr_on = 1'b0;
         end
         endcase
     end
-
-
 endmodule

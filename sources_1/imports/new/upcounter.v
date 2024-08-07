@@ -1,6 +1,5 @@
 `timescale 1ns / 1ps
 
-
 module upcounter(
     input clk,
     input reset,
@@ -77,9 +76,6 @@ module counter_for_upcnt (
                         r_counter <= r_counter + 1;
                     end
                 end 
-                // else begin
-                //     r_counter <= r_counter; // tick이 들어오지 않으면 자기 자신으로
-                // end
             end // else i_run_on
             else begin
                 // r_counter <= r_counter;
@@ -87,7 +83,7 @@ module counter_for_upcnt (
                     r_counter <= 0;
                 end
                 else begin
-                    r_counter <= r_counter;
+                    r_counter <= r_counter; // tick이 들어오지 않으면 자기 자신으로
                 end
             end
         end
