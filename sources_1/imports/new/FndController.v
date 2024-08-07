@@ -40,7 +40,7 @@ BCD2SEG U_Bcd2Seg(
     .seg(fndFont)
 );
 
-digitSplitter(
+digitSplitter U_dig(
 .i_digit     (digit),
 .o_digit_1   (w_dig_1),
 .o_digit_10  (w_dig_10),
@@ -148,8 +148,6 @@ module mux_4x1(
         endcase
     end
 endmodule
-
-
 
 module clkDiv(
     input clk,

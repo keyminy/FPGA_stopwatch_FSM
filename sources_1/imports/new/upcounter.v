@@ -10,14 +10,17 @@ module upcounter(
     );
     wire w_clk_10hz;
 
-   clockDivider U_ClkDiv(
+   clockDivider U_ClkDiv10Hz(
     .clk(clk)      ,
     .reset(reset)    ,
     .o_clk(w_clk_10hz)
     );
-    counter U_Counter(
-        .clk  (w_clk_10hz)  ,
-        .reset(reset)  ,
+    counter_for_upcnt U_counter_for_upcnt(
+        .clk(clk),
+        .reset(reset),
+        .tick  (w_clk_10hz)  ,
+        .i_run_on(i_run_on),
+        .i_clr_on(i_clr_on),
         .count(qout)
     );
 endmodule
@@ -49,9 +52,10 @@ module clockDivider (
     end
 endmodule
 
-module counter (
+module counter_for_upcnt (
     input clk,
     input reset,
+    input tick,
     input i_run_on,
     input i_clr_on,
     output [13:0] count
@@ -63,16 +67,27 @@ module counter (
         if(reset) begin
             r_counter <= 0;
         end else begin
-            if (i_run_on == 1 && i_clr_on == 0)begin
-                if(r_counter == 10_000-1 || i_clr_on) begin
-                    r_counter <= 0;
-                end else if (i_run_on == 1) begin
-                    r_counter <= r_counter + 1;
+            if (i_run_on) begin
+                if(tick) begin 
+                    // enable되고, tick이 들어왔을때 counting시작한다.
+                    if(r_counter == 10_000-1) begin
+                        r_counter <= 0;
+                    end else begin
+                        r_counter <= r_counter + 1;
+                    end
+                end else begin
+                    r_counter <= r_counter; // tick이 들어오지 않으면 자기 자신으로
                 end
-            end else if(i_run_on == 0 && i_clr_on == 1) begin
+            end // else i_run_on
+            else begin
+                // r_counter <= r_counter;
+                if(i_clr_on) begin
                     r_counter <= 0;
+                end
+                else begin
+                    r_counter <= r_counter;
+                end
             end
         end
     end
-    
 endmodule

@@ -5,13 +5,14 @@ module fsm_watch(
     input clk,
     input reset,
     input [1:0] sw,
-    output led,
     output reg o_run_on,
     output reg o_clr_on
     );
 
      // state has 2 state
-    reg state,next_state; //상태를 저장하는 레지스터
+     // state,next_state bit수 안맞춰줫다;; 
+    reg [1:0] state;
+    reg [1:0] next_state; //상태를 저장하는 레지스터
     parameter STP_MD = 2'b00;
     parameter RUN_MD = 2'b01; 
     parameter CLR_MD = 2'b10;
@@ -28,17 +29,29 @@ module fsm_watch(
     // next state Combination logic
     always @(*) begin
         case(state)
+        // 자기 자신으로 돌아가는 것을 안해줌
         STP_MD: begin
             if(sw[0] == 1'b1) 
                 next_state = RUN_MD;
+            else if(sw[1]==1)
+                next_state = CLR_MD;
+            else
+                next_state = STP_MD;
         end
         RUN_MD: begin
             if(sw[0] == 1'b0) 
                 next_state = STP_MD;
+            else
+                next_state = RUN_MD;
         end
         CLR_MD: begin
-            if(sw[1] == 1'b1)
+            if(sw[1] == 1'b0)
+                next_state = STP_MD;
+            else 
                 next_state = CLR_MD;
+        end
+        default: begin
+            next_state = state; // default : 그냥 자기 자신이다..
         end
         endcase
     end
@@ -47,13 +60,21 @@ module fsm_watch(
     always @(*) begin
         case(state)
         STP_MD: begin
-            o_run_on <= 0;
+            o_run_on = 1'b0;
+            o_clr_on = 1'b0;
         end
         RUN_MD: begin
-            o_run_on <= 1;
+            o_run_on = 1'b1;
+            o_clr_on = 1'b0;
         end
         CLR_MD: begin
-            o_clr_on <= 1;
+            o_clr_on = 1'b1;
+            o_run_on = 1'b0;
+        end
+        // default이거 안하면 어떻게 될까요??
+        default: begin
+            o_run_on = 1'b0;
+            o_clr_on = 1'b0;
         end
         endcase
     end

@@ -10,15 +10,13 @@ module fsm_upcounter_top(
     );
 
     wire [13:0] w_i_digit;
-    wire [1:0] w_led;
     wire w_run_on;
     wire w_clr_on;
 
     fsm_watch U_fsm_wawtch(
         .clk(clk),
-        .reset(clk),
+        .reset(reset),
         .sw(sw),
-        .led(w_led),
         .o_run_on(w_run_on),
         .o_clr_on(w_clr_on)
     );
