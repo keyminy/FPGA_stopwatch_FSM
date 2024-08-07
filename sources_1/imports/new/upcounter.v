@@ -69,15 +69,17 @@ module counter_for_upcnt (
         end else begin
             if (i_run_on) begin
                 if(tick) begin 
+                    // tick : 10Hz clk
                     // enable되고, tick이 들어왔을때 counting시작한다.
                     if(r_counter == 10_000-1) begin
                         r_counter <= 0;
                     end else begin
                         r_counter <= r_counter + 1;
                     end
-                end else begin
-                    r_counter <= r_counter; // tick이 들어오지 않으면 자기 자신으로
-                end
+                end 
+                // else begin
+                //     r_counter <= r_counter; // tick이 들어오지 않으면 자기 자신으로
+                // end
             end // else i_run_on
             else begin
                 // r_counter <= r_counter;
